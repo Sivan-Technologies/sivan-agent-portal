@@ -46,8 +46,8 @@ export const Navbar: React.FC = () => {
   return (
     <nav className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-5 lg:px-10">
-        {/* Brand + Agent Badge */}
-        <div className="flex items-center gap-4">
+        {/* Brand */}
+        <div className="flex items-center gap-3">
           <a href="#protocol" className="group flex items-center gap-3" aria-label="Sivan Ai Agent Portal">
             <img
               src={sivanLogo}
@@ -61,23 +61,10 @@ export const Navbar: React.FC = () => {
               </span>
             </div>
           </a>
-
-          <a
-            href="https://8004scan.io/agents/celo/10089"
-            target="_blank"
-            rel="noreferrer"
-            className="hidden items-center gap-2 border border-border bg-secondary/70 px-2.5 py-1 font-mono text-[10px] text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground xl:inline-flex"
-          >
-            <span className="status-dot" />
-            <span className="text-success font-semibold">CELO #10089</span>
-            <span>·</span>
-            <span>ERC-8004</span>
-            <ExternalLink className="size-2.5" />
-          </a>
         </div>
 
         {/* Desktop Nav Links */}
-        <div className="hidden items-center gap-7 text-xs font-semibold text-muted-foreground md:flex">
+        <div className="hidden items-center gap-8 text-xs font-semibold text-muted-foreground md:flex">
           <a className="transition-colors hover:text-foreground" href="#protocol">
             Protocol
           </a>
