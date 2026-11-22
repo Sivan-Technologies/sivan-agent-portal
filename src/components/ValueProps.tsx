@@ -9,6 +9,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { AGENT_CHAINS } from './HeroSection';
+import { AssetIcon } from './AssetIcon';
 
 const PILLARS = [
   {
@@ -110,7 +111,6 @@ export const ValueProps: React.FC = () => {
               </span>
               <div className="mt-5 space-y-2" role="tablist" aria-label="Celo settlement rails">
                 {AGENT_CHAINS.map((item, idx) => {
-                  const ChainLogo = item.logo;
                   const active = activeChainIdx === idx;
                   return (
                     <button
@@ -125,7 +125,7 @@ export const ValueProps: React.FC = () => {
                       }`}
                     >
                       <span className="flex items-center gap-3">
-                        <ChainLogo variant="background" size={22} className="rounded-full" />
+                        <AssetIcon asset={item.asset} size={22} />
                         <span>{item.name}</span>
                       </span>
                       <ChevronRight className="size-4" />

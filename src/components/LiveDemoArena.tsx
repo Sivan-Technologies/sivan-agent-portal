@@ -14,6 +14,42 @@ import {
   XCircle,
   Zap,
 } from 'lucide-react';
+import { AssetIcon } from './AssetIcon';
+
+const ASSET_CONFIGS = {
+  USDC: {
+    symbol: 'USDC',
+    display: 'USDC',
+    contract: '0xcebA9300f2b948710d2653dD7B07f33A8B32118C',
+    contractShort: '0xcebA…118C',
+    name: 'USD Coin',
+    version: '2',
+  },
+  USDT: {
+    symbol: 'USDT',
+    display: 'USD₮',
+    contract: '0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e',
+    contractShort: '0x4806…3D5e',
+    name: 'Tether USD',
+    version: '1',
+  },
+  USAT: {
+    symbol: 'USAT',
+    display: 'USA₮',
+    contract: '0xD2ab3C9A02DBBAB236BfEC45D1d755DF4267F771',
+    contractShort: '0xD2ab…F771',
+    name: 'Tether America USD',
+    version: '1',
+  },
+  cUSD: {
+    symbol: 'cUSD',
+    display: 'cUSD',
+    contract: '0x765DE816845861e75A25fCA122bb6898B8B1282a',
+    contractShort: '0x765D…282a',
+    name: 'Celo Dollar',
+    version: '1',
+  },
+};
 
 const X402_CHALLENGE_JSON = {
   x402: {
@@ -47,9 +83,10 @@ export const LiveDemoArena: React.FC = () => {
 
   // Tab 1: x402 Protocol State
   const [x402State, setX402State] = useState<'idle' | 'challenging' | 'signing' | 'settled'>('settled');
-  const [selectedAsset, setSelectedAsset] = useState<'USDC' | 'USDT' | 'cUSD'>('USDC');
+  const [selectedAsset, setSelectedAsset] = useState<'USDC' | 'USDT' | 'USAT' | 'cUSD'>('USDC');
   const [showDecodedHeader, setShowDecodedHeader] = useState(true);
   const [copiedHeader, setCopiedHeader] = useState(false);
+  const currentAssetCfg = ASSET_CONFIGS[selectedAsset] ?? ASSET_CONFIGS.USDC;
 
   // Tab 2: Self Agent ID State
   const [sliderAmount, setSliderAmount] = useState<number>(500);
@@ -203,18 +240,26 @@ export const LiveDemoArena: React.FC = () => {
               </div>
 
               <div className="flex flex-wrap items-center gap-2.5">
+                <div className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground mr-1">
+                  <span className="size-1.5 rounded-full bg-primary" />
+                  <span>LIVE ASSETS</span>
+                </div>
                 <div className="flex border border-border bg-background p-0.5 font-mono text-[10px]">
-                  {(['USDC', 'USDT', 'cUSD'] as const).map((sym) => (
-                    <button
-                      key={sym}
-                      onClick={() => setSelectedAsset(sym)}
-                      className={`px-2.5 py-1 transition-colors ${
-                        selectedAsset === sym ? 'bg-secondary text-primary font-semibold' : 'text-muted-foreground'
-                      }`}
-                    >
-                      {sym}
-                    </button>
-                  ))}
+                  {(['USDC', 'USDT', 'USAT', 'cUSD'] as const).map((sym) => {
+                    const cfg = ASSET_CONFIGS[sym];
+                    return (
+                      <button
+                        key={sym}
+                        onClick={() => setSelectedAsset(sym)}
+                        className={`flex items-center gap-1.5 px-2.5 py-1 transition-colors ${
+                          selectedAsset === sym ? 'bg-secondary text-primary font-semibold' : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        <AssetIcon asset={sym} size={14} />
+                        <span>{cfg.display}</span>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <button
@@ -280,11 +325,11 @@ Content-Type: application/json
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Settlement Asset:</span>
-                      <span className="text-foreground">{selectedAsset} (0xcebA…118C)</span>
+                      <span className="text-foreground">{currentAssetCfg.display} ({currentAssetCfg.contractShort})</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Authorized Micro-Fee:</span>
-                      <span className="text-foreground">5000 units (0.005 {selectedAsset})</span>
+                      <span className="text-foreground">5000 units (0.005 {currentAssetCfg.display})</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">PayTo (Agent #10089 Vault):</span>

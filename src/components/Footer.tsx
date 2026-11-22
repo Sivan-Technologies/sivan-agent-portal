@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowRight, ExternalLink, MessageCircle, Send } from 'lucide-react';
 import sivanLogo from '../assets/sivan-logo.png';
 import { AGENT_CHAINS } from './HeroSection';
+import { AssetIcon } from './AssetIcon';
 
 export const Footer: React.FC = () => {
   return (
@@ -123,28 +124,25 @@ export const Footer: React.FC = () => {
             </ul>
           </nav>
 
-          {/* Column 3: Networks with @web3icons/react */}
-          <nav aria-label="Networks">
-            <h3 className="font-mono text-[10px] uppercase text-muted-foreground">Settlement Networks</h3>
+          {/* Column 3: Celo Settlement Rails */}
+          <nav aria-label="Celo Rails">
+            <h3 className="font-mono text-[10px] uppercase text-muted-foreground">Celo Settlement Rails</h3>
             <ul className="mt-5 space-y-3 text-sm">
-              {AGENT_CHAINS.map((item) => {
-                const NetworkLogo = item.logo;
-                return (
-                  <li key={item.short}>
-                    <a
-                      className="footer-link group flex items-center gap-3"
-                      href={item.explorer}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <span className="grid size-6 shrink-0 place-items-center" aria-hidden="true">
-                        <NetworkLogo variant="background" size={22} />
-                      </span>
-                      <span>{item.name}</span>
-                    </a>
-                  </li>
-                );
-              })}
+              {AGENT_CHAINS.map((item) => (
+                <li key={item.short}>
+                  <a
+                    className="footer-link group flex items-center gap-3"
+                    href={item.explorer}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <span className="grid size-6 shrink-0 place-items-center" aria-hidden="true">
+                      <AssetIcon asset={item.asset} size={18} />
+                    </span>
+                    <span>{item.name}</span>
+                  </a>
+                </li>
+              ))}
             </ul>
           </nav>
 

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { NetworkCelo } from '@web3icons/react';
 import {
   ArrowRight,
   Bot,
@@ -13,11 +12,28 @@ import {
   Terminal,
   Zap,
 } from 'lucide-react';
+import { AssetIcon, AssetType } from './AssetIcon';
 
-export const AGENT_CHAINS = [
+export interface AgentChain {
+  name: string;
+  short: string;
+  asset: AssetType;
+  chainId: string;
+  token: string;
+  speed: string;
+  feeModel: string;
+  colorClass: string;
+  explorer: string;
+  txHash: string;
+  txDisplay: string;
+  txUrl: string;
+}
+
+export const AGENT_CHAINS: AgentChain[] = [
   {
     name: 'Celo Mainnet · USDC',
     short: 'USDC',
+    asset: 'USDC',
     chainId: 'eip155:42220',
     token: 'Native Circle USDC',
     speed: '~5s · Sub-second Finality',
@@ -27,11 +43,39 @@ export const AGENT_CHAINS = [
     txHash: '0xc339a4514e6b1e8949579e8d6f44ceea6ccc8450a79373d42fc2f331c734357d',
     txDisplay: '0xc339a4…357d',
     txUrl: 'https://celoscan.io/tx/0xc339a4514e6b1e8949579e8d6f44ceea6ccc8450a79373d42fc2f331c734357d',
-    logo: NetworkCelo,
+  },
+  {
+    name: 'Celo Mainnet · USD₮',
+    short: 'USD₮',
+    asset: 'USDT',
+    chainId: 'eip155:42220',
+    token: 'Tether USD',
+    speed: '~5s · Global Liquidity',
+    feeModel: 'Zero Caller Gas · EIP-3009',
+    colorClass: 'chain-celo',
+    explorer: 'https://celoscan.io',
+    txHash: '0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b',
+    txDisplay: '0x1a2b3c…1a2b',
+    txUrl: 'https://celoscan.io',
+  },
+  {
+    name: 'Celo Mainnet · USA₮',
+    short: 'USA₮',
+    asset: 'USAT',
+    chainId: 'eip155:42220',
+    token: 'Tether America USD',
+    speed: '~5s · x402 Facilitator',
+    feeModel: 'Zero Caller Gas · EIP-3009',
+    colorClass: 'chain-celo',
+    explorer: 'https://celoscan.io',
+    txHash: '0xd2ab3c9a02dbbab236bfec45d1d755df4267f77100112233445566778899aabb',
+    txDisplay: '0xd2ab3c…aabb',
+    txUrl: 'https://celoscan.io',
   },
   {
     name: 'Celo Mainnet · cUSD',
     short: 'cUSD',
+    asset: 'cUSD',
     chainId: 'eip155:42220',
     token: 'Celo Dollar (cUSD)',
     speed: '~5s · Instant Settle',
@@ -41,25 +85,11 @@ export const AGENT_CHAINS = [
     txHash: '0x7e8b91c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0',
     txDisplay: '0x7e8b91…f9a0',
     txUrl: 'https://celoscan.io',
-    logo: NetworkCelo,
-  },
-  {
-    name: 'Celo Mainnet · USDT',
-    short: 'USDT',
-    chainId: 'eip155:42220',
-    token: 'Tether USD (USDT)',
-    speed: '~5s · Global Liquidity',
-    feeModel: 'Zero Caller Gas',
-    colorClass: 'chain-celo',
-    explorer: 'https://celoscan.io',
-    txHash: '0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b',
-    txDisplay: '0x1a2b3c…1a2b',
-    txUrl: 'https://celoscan.io',
-    logo: NetworkCelo,
   },
   {
     name: 'Textile FX · cNGN Rail',
     short: 'cNGN',
+    asset: 'cNGN',
     chainId: 'celo:textile-fx',
     token: 'cNGN 1:1 Parity',
     speed: '< 1 to 2m · NIBSS Direct',
@@ -69,11 +99,11 @@ export const AGENT_CHAINS = [
     txHash: '0x4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f9e0d1c2b3a4f5e',
     txDisplay: '0x4f5e6d…4f5e',
     txUrl: 'https://celoscan.io',
-    logo: NetworkCelo,
   },
   {
     name: 'Celo Sepolia Testnet',
     short: 'SEPOLIA',
+    asset: 'SEPOLIA',
     chainId: 'eip155:11142220',
     token: 'Test USDC · cUSD',
     speed: '~5s · Sandbox Rail',
@@ -83,7 +113,6 @@ export const AGENT_CHAINS = [
     txHash: '0x8b9a0f1e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f9e0d1c2b3a4f5e6d7c8b9a',
     txDisplay: '0x8b9a0f…8b9a',
     txUrl: 'https://sepolia.celoscan.io',
-    logo: NetworkCelo,
   },
 ];
 
@@ -203,7 +232,6 @@ export const HeroSection: React.FC = () => {
               {/* Chain Switcher Tabs */}
               <div className="flex overflow-x-auto border-b border-border bg-background/50 px-3 py-2 gap-1.5">
                 {AGENT_CHAINS.map((item, idx) => {
-                  const ChainLogo = item.logo;
                   const active = selectedChainIdx === idx;
                   return (
                     <button
@@ -215,7 +243,7 @@ export const HeroSection: React.FC = () => {
                           : 'border-transparent text-muted-foreground hover:text-foreground'
                       }`}
                     >
-                      <ChainLogo variant="background" size={16} className="rounded-full" />
+                      <AssetIcon asset={item.asset} size={16} />
                       <span>{item.short}</span>
                     </button>
                   );
