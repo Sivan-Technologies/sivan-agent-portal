@@ -1,126 +1,353 @@
-import React from 'react';
-import { ArrowRight, Bot, ShieldCheck, Zap, Layers, CheckCircle2, Terminal } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  NetworkArbitrumOne,
+  NetworkBase,
+  NetworkCelo,
+  NetworkSolana,
+  NetworkStellar,
+} from '@web3icons/react';
+import {
+  ArrowRight,
+  Bot,
+  Check,
+  ChevronRight,
+  CircleDollarSign,
+  ExternalLink,
+  Fingerprint,
+  ShieldCheck,
+  Sparkles,
+  Terminal,
+  Zap,
+} from 'lucide-react';
+
+export const AGENT_CHAINS = [
+  {
+    name: 'Celo Mainnet',
+    short: 'CELO',
+    chainId: 'eip155:42220',
+    token: 'USDC · cUSD · cNGN',
+    speed: '~5s · Zero Caller Gas',
+    feeModel: 'Hosted x402 Facilitator',
+    colorClass: 'chain-celo',
+    explorer: 'https://celoscan.io',
+    txHash: '0xc339a4514e6b1e8949579e8d6f44ceea6ccc8450a79373d42fc2f331c734357d',
+    txDisplay: '0xc339a4…357d',
+    txUrl: 'https://celoscan.io/tx/0xc339a4514e6b1e8949579e8d6f44ceea6ccc8450a79373d42fc2f331c734357d',
+    logo: NetworkCelo,
+  },
+  {
+    name: 'Stellar',
+    short: 'XLM',
+    chainId: 'stellar:pubnet',
+    token: 'USDC',
+    speed: '~4s · CAP-0015 Sponsored',
+    feeModel: 'Zero Gas Envelope',
+    colorClass: 'chain-stellar',
+    explorer: 'https://stellar.expert/explorer/public',
+    txHash: '7a5f82c9103e48b592d6e7104b2a38c91a0293b4827c193e481b29a74c10283e',
+    txDisplay: '7a5f82…283e',
+    txUrl: 'https://stellar.expert/explorer/public/tx/7a5f82c9103e48b592d6e7104b2a38c91a0293b4827c193e481b29a74c10283e',
+    logo: NetworkStellar,
+  },
+  {
+    name: 'Base',
+    short: 'BASE',
+    chainId: 'eip155:8453',
+    token: 'USDC',
+    speed: '~2s · L2 High Throughput',
+    feeModel: 'Sponsored Relayer',
+    colorClass: 'chain-base',
+    explorer: 'https://basescan.org',
+    txHash: '0x8f2a63d719be4d0928b502c4b8e21f928491c107e3768f512da5c3a0179f8e4a',
+    txDisplay: '0x8f2a63…8e4a',
+    txUrl: 'https://basescan.org/tx/0x8f2a63d719be4d0928b502c4b8e21f928491c107e3768f512da5c3a0179f8e4a',
+    logo: NetworkBase,
+  },
+  {
+    name: 'Solana',
+    short: 'SOL',
+    chainId: 'solana:mainnet',
+    token: 'USDC · USDT',
+    speed: '~0.4s · Sub-Cent Rail',
+    feeModel: 'Fee-Payer Sponsored',
+    colorClass: 'chain-solana',
+    explorer: 'https://solscan.io',
+    txHash: '5xK9m2p8vR4tL7nQ1wZ3cE6bY9jH2dF4gA8sM1kP7vN3qR9tW5yX2zL6cB4nV8mK',
+    txDisplay: '5xK9m2…8mK',
+    txUrl: 'https://solscan.io',
+    logo: NetworkSolana,
+  },
+  {
+    name: 'Arbitrum One',
+    short: 'ARB',
+    chainId: 'eip155:42161',
+    token: 'USDC',
+    speed: '~0.25s · Nitro L2',
+    feeModel: 'Sponsored Relayer',
+    colorClass: 'chain-arbitrum',
+    explorer: 'https://arbiscan.io',
+    txHash: '0x9a1c7f3b82e4019d65b204918e7c1039a82b47e51029c38f471b02938e1a7b48',
+    txDisplay: '0x9a1c7f…7b48',
+    txUrl: 'https://arbiscan.io/tx/0x9a1c7f3b82e4019d65b204918e7c1039a82b47e51029c38f471b02938e1a7b48',
+    logo: NetworkArbitrumOne,
+  },
+];
+
+const HERO_METRICS: [string, string][] = [
+  ['#10089', 'ERC-8004 Celo Agent ID'],
+  ['$0.00', 'Caller Agent Gas Fee'],
+  ['< 1 to 2m', 'Nigerian Bank NIBSS Rail'],
+  ['$50 / $5K', 'Self Proof-of-Human Tiers'],
+  ['6 Tools', 'Certified MCP & REST Surface'],
+];
 
 export const HeroSection: React.FC = () => {
+  const [selectedChainIdx, setSelectedChainIdx] = useState(0);
+  const chain = AGENT_CHAINS[selectedChainIdx] ?? AGENT_CHAINS[0];
+
   return (
-    <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
-      {/* Background radial glow accents matching sivan-home-pagev2 */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00f2fe]/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-1/3 right-10 w-[450px] h-[450px] bg-[#fcff52]/8 rounded-full blur-[160px] pointer-events-none" />
+    <>
+      <section id="protocol" className="relative min-h-[780px] border-b border-border pt-16">
+        <div className="glacial-grid absolute inset-0" aria-hidden="true" />
+        <div className="route-beam absolute left-1/2 top-16 h-px w-[68%] -translate-x-1/2" aria-hidden="true" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center max-w-4xl mx-auto">
-          {/* Active Status Badges */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
-            <a
-              href="https://8004scan.io/agents/celo/10089"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 border border-emerald-500/40 text-xs font-mono text-emerald-300 hover:border-emerald-400 transition-colors shadow-[0_0_15px_rgba(16,185,129,0.15)]"
-            >
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Celo Mainnet Agent #10089</span>
-              <span className="text-slate-600">·</span>
-              <span className="text-slate-400">ERC-8004 Verified</span>
-            </a>
+        <div className="relative mx-auto grid max-w-[1440px] gap-14 px-5 pb-16 pt-16 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:px-10 lg:pb-24 lg:pt-24">
+          {/* Left Column: Narrative & Primary CTAs */}
+          <div className="max-w-2xl">
+            <div className="mb-6 flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 border border-border bg-secondary/70 px-3 py-1.5 font-mono text-[10px] uppercase text-muted-foreground">
+                <Sparkles className="size-3 text-primary" />
+                <span>Protocol Status</span>
+                <span className="text-success font-semibold">Operational</span>
+              </div>
 
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 border border-[#fcff52]/30 text-xs font-mono text-[#fcff52]">
-              <Zap className="w-3.5 h-3.5" />
-              <span>Hosted x402 Facilitator Live</span>
-            </span>
+              <a
+                href="https://8004scan.io/agents/celo/10089"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 border border-primary/35 bg-primary/5 px-3 py-1.5 font-mono text-[10px] uppercase text-primary transition-colors hover:bg-primary/10"
+              >
+                <span className="status-dot" />
+                <span>Celo Agent #10089 · ERC-8004</span>
+                <ExternalLink className="size-2.5" />
+              </a>
+            </div>
 
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 border border-blue-500/30 text-xs font-mono text-blue-300">
-              <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
-              <span>Self Protocol Proof-of-Human Gate</span>
-            </span>
+            <h1 className="font-display text-[clamp(2.5rem,5.1vw,5.3rem)] font-semibold leading-[0.98] tracking-tight">
+              Autonomous Financial Rails. <span className="text-gradient">Real-World Fiat</span> for AI Agents.
+            </h1>
+
+            <p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground lg:text-lg">
+              Connect any LLM or autonomous agent to milestone-protected Service Agreements, Celo x402 zero-gas settlement, Self Protocol biometric sybil defense, and direct African bank payouts via Textile FX and NIBSS rails.
+            </p>
+
+            <div className="mt-9 flex flex-wrap gap-3">
+              <a
+                href="#demo-arena"
+                className="btn-glow inline-flex h-11 items-center gap-2.5 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-95"
+              >
+                <Zap className="size-4 fill-current" />
+                <span>Launch Live Demo Arena</span>
+                <ArrowRight className="size-4" />
+              </a>
+
+              <a
+                href="#mcp-hub"
+                className="inline-flex h-11 items-center gap-2 rounded-md border border-border bg-card px-5 text-sm font-semibold text-foreground transition-colors hover:border-primary/40 hover:bg-secondary"
+              >
+                <Terminal className="size-4 text-primary" />
+                <span>1-Click MCP Setup</span>
+              </a>
+
+              <a
+                href="https://8004scan.io/agents/celo/10089"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-11 items-center gap-2 rounded-md border border-border bg-background/60 px-4 font-mono text-xs text-muted-foreground transition-colors hover:border-border hover:text-foreground"
+              >
+                <Bot className="size-3.5 text-success" />
+                <span>8004scan Registry</span>
+                <ExternalLink className="size-3" />
+              </a>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 font-mono text-xs text-muted-foreground">
+              <span className="flex items-center gap-2">
+                <Zap className="size-4 text-primary" /> Hosted x402 V2 Facilitator
+              </span>
+              <span className="flex items-center gap-2">
+                <Fingerprint className="size-4 text-success" /> Self Agent ID ZK Guard
+              </span>
+              <span className="flex items-center gap-2">
+                <CircleDollarSign className="size-4 text-primary" /> Textile FX cNGN · NIBSS
+              </span>
+              <span className="flex items-center gap-2 text-foreground">
+                <ShieldCheck className="size-4 text-success" /> Tag: celo_bdb587d550be
+              </span>
+            </div>
           </div>
 
-          {/* Main Headline (Syne font) */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-extrabold text-white tracking-tight leading-[1.15] mb-6">
-            Autonomous Financial Rails <br />
-            <span className="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-              and Fiat Off-Ramps for
-            </span>{' '}
-            <span className="bg-gradient-to-r from-[#00f2fe] via-[#38bdf8] to-[#fcff52] bg-clip-text text-transparent">
-              AI Agents
-            </span>
-          </h1>
-
-          {/* Subheadline (Manrope font) */}
-          <p className="text-lg md:text-xl text-slate-300 font-sans leading-relaxed max-w-3xl mx-auto mb-10">
-            Empower your agents to coordinate milestone Service Agreements, settle via Celo x402 gas-free protocol, protect liquidity with biometric Proof-of-Human security, and disburse real-world local currency directly into African bank accounts.
-          </p>
-
-          {/* Primary Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            <a
-              href="#demo-arena"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#00f2fe] hover:bg-[#00f2fe]/90 text-[#06080f] font-semibold text-sm transition-all shadow-[0_0_25px_rgba(0,242,254,0.35)] flex items-center justify-center gap-2 group"
-            >
-              <Zap className="w-4 h-4 fill-current text-[#06080f]" />
-              <span>Launch Live Demo Arena</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </a>
-
-            <a
-              href="#mcp-hub"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-xl border border-slate-700 hover:border-slate-500 bg-slate-900/80 hover:bg-slate-800 text-white font-medium text-sm transition-colors flex items-center justify-center gap-2"
-            >
-              <Terminal className="w-4 h-4 text-[#00f2fe]" />
-              <span>1-Click MCP Quickstart</span>
-            </a>
-
-            <a
-              href="https://8004scan.io/agents/celo/10089"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto px-5 py-3.5 rounded-xl border border-slate-800 hover:border-slate-700 bg-slate-950/60 text-slate-400 hover:text-slate-200 text-xs font-mono transition-colors flex items-center justify-center gap-1.5"
-            >
-              <Bot className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Tag: celo_bdb587d550be</span>
-            </a>
-          </div>
-
-          {/* Core Metric Callouts */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-6 border-t border-slate-800/80">
-            <div className="p-4 rounded-xl bg-slate-900/40 border border-slate-800/60 text-left">
-              <div className="text-xs font-mono text-slate-400 mb-1 flex items-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-[#fcff52]" />
-                Gas Model
+          {/* Right Column: 3D Architectural Agent Execution Console */}
+          <div className="console-wrap relative mx-auto w-full max-w-[680px]">
+            <div className="console-glow" aria-hidden="true" />
+            <div className="relative border border-border bg-card/95 shadow-2xl shadow-background">
+              {/* Top Console Bar */}
+              <div className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-5">
+                <div className="flex items-center gap-2 font-mono text-[10px] uppercase text-muted-foreground">
+                  <span className="size-1.5 bg-primary" /> Agentic Settlement Console · ERC-8004
+                </div>
+                <div className="flex items-center gap-2 font-mono text-[10px]">
+                  <span className="border border-primary/30 bg-primary/10 px-2 py-0.5 text-primary">
+                    x402 V2
+                  </span>
+                  <span className="border border-success/30 bg-success/10 px-2 py-0.5 text-success">
+                    SELF ZK ACTIVE
+                  </span>
+                </div>
               </div>
-              <div className="text-lg font-bold font-display text-white">0% Caller Gas</div>
-              <div className="text-[11px] text-slate-500 font-mono mt-0.5">Sponsored Celo & Multi-Chain</div>
-            </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/40 border border-slate-800/60 text-left">
-              <div className="text-xs font-mono text-slate-400 mb-1 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                Bank Settlement
+              {/* Chain Switcher Tabs */}
+              <div className="flex overflow-x-auto border-b border-border bg-background/50 px-3 py-2 gap-1.5">
+                {AGENT_CHAINS.map((item, idx) => {
+                  const ChainLogo = item.logo;
+                  const active = selectedChainIdx === idx;
+                  return (
+                    <button
+                      key={item.short}
+                      onClick={() => setSelectedChainIdx(idx)}
+                      className={`inline-flex shrink-0 items-center gap-2 rounded-sm border px-3 py-1.5 font-mono text-[10px] transition-colors ${
+                        active
+                          ? 'border-primary/50 bg-secondary text-foreground font-semibold'
+                          : 'border-transparent text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      <ChainLogo variant="background" size={16} className="rounded-full" />
+                      <span>{item.short}</span>
+                    </button>
+                  );
+                })}
               </div>
-              <div className="text-lg font-bold font-display text-white">&lt; 1 to 2 Mins</div>
-              <div className="text-[11px] text-slate-500 font-mono mt-0.5">Textile FX · NIBSS Rails</div>
-            </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/40 border border-slate-800/60 text-left">
-              <div className="text-xs font-mono text-slate-400 mb-1 flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
-                Self Sybil Guard
-              </div>
-              <div className="text-lg font-bold font-display text-white">$50 vs $5,000</div>
-              <div className="text-[11px] text-slate-500 font-mono mt-0.5">Bot Ceiling · Human Pass</div>
-            </div>
+              {/* Console Body */}
+              <div className="p-5 sm:p-6 space-y-5">
+                {/* Agent Identity & Vault Header */}
+                <div className="flex flex-col justify-between gap-4 border border-border bg-background/60 p-4 sm:flex-row sm:items-center">
+                  <div>
+                    <span className="font-mono text-[9px] uppercase text-muted-foreground">
+                      ACTIVE ON-CHAIN AGENTVAULT ({chain.chainId})
+                    </span>
+                    <div className="mt-1 flex items-center gap-2">
+                      <strong className="font-display text-lg font-semibold text-foreground">
+                        Sivan Payment Ai · #10089
+                      </strong>
+                      <span className="font-mono text-[10px] text-primary">
+                        0x46eF…12345
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-left sm:text-right">
+                    <span className="font-mono text-[9px] uppercase text-muted-foreground">
+                      CALLDATA ATTRIBUTION
+                    </span>
+                    <p className="mt-1 font-mono text-xs font-semibold text-success">
+                      celo_bdb587d550be
+                    </p>
+                  </div>
+                </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/40 border border-slate-800/60 text-left">
-              <div className="text-xs font-mono text-slate-400 mb-1 flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-[#00f2fe]" />
-                Execution Rails
+                {/* Live Animated Flow Pipeline */}
+                <div className="flex items-center justify-between gap-2 border border-border bg-background/40 px-4 py-4">
+                  <div className="network-node">
+                    <span className="font-mono text-[9px] uppercase text-muted-foreground">CALLER AGENT</span>
+                    <strong>EIP-3009 Auth</strong>
+                    <span className="font-mono text-[10px] text-primary">0.005 USDC · 0 Gas</span>
+                  </div>
+
+                  <div className="flow-line" aria-hidden="true">
+                    <i />
+                  </div>
+
+                  <div className="network-node text-center">
+                    <span className="font-mono text-[9px] uppercase text-muted-foreground">FACILITATOR & GATE</span>
+                    <strong>x402 + Self ZK</strong>
+                    <span className="font-mono text-[10px] text-success">Human Tier ($5,000)</span>
+                  </div>
+
+                  <div className="flow-line" aria-hidden="true">
+                    <i />
+                  </div>
+
+                  <div className="network-node text-right">
+                    <span className="font-mono text-[9px] uppercase text-muted-foreground">LAST-MILE RAIL</span>
+                    <strong>Textile FX · NIBSS</strong>
+                    <span className="font-mono text-[10px] text-foreground">&lt; 1 to 2m Bank Credit</span>
+                  </div>
+                </div>
+
+                {/* 4-Step Verification Grid */}
+                <div className="grid grid-cols-2 gap-px border border-border bg-border sm:grid-cols-4">
+                  {[
+                    ['HTTP 402 Issued', 'Base64 challenge header'],
+                    ['Self ZK Proof', 'Sybil limit verified'],
+                    ['Milestone Locked', 'Service Agreement active'],
+                    ['Settled to Bank', 'cNGN · NUBAN credited'],
+                  ].map(([title, sub]) => (
+                    <div key={title} className="flex min-h-20 flex-col justify-between bg-card p-3">
+                      <div className="flex items-center justify-between">
+                        <Check className="size-3.5 text-success" />
+                        <span className="font-mono text-[8px] uppercase text-primary">OK</span>
+                      </div>
+                      <div>
+                        <p className="font-mono text-[10px] font-semibold text-foreground">{title}</p>
+                        <span className="font-mono text-[9px] leading-3 text-muted-foreground">{sub}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="text-lg font-bold font-display text-white">Celo · Multi-Chain</div>
-              <div className="text-[11px] text-slate-500 font-mono mt-0.5">MCP & REST JSON-RPC</div>
+
+              {/* Console Footer */}
+              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-background/40 px-4 py-3 font-mono text-[9px] text-muted-foreground sm:px-6">
+                <span>
+                  CONFIRMED ON {chain.name.toUpperCase()} · {chain.speed.toUpperCase()}
+                </span>
+                <a
+                  href={chain.txUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 text-primary hover:underline"
+                >
+                  <span>VERIFY TX ({chain.txDisplay})</span>
+                  <ChevronRight className="size-3" />
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* 5-Column Protocol Proof Bar matching sivan-home-pagev2 */}
+      <section aria-label="Protocol proof" className="border-b border-border bg-card/60">
+        <div className="mx-auto grid max-w-[1440px] grid-cols-2 px-5 sm:grid-cols-3 lg:grid-cols-5 lg:px-10">
+          {HERO_METRICS.map(([value, label], index) => (
+            <div
+              key={label}
+              className={`py-7 ${index < 4 ? 'lg:border-r lg:border-border' : ''} ${
+                index % 2 === 0 ? 'max-sm:border-r max-sm:border-border' : ''
+              }`}
+            >
+              <div className="px-4 lg:px-6">
+                <strong className="font-display text-xl font-semibold text-foreground sm:text-2xl">
+                  {value}
+                </strong>
+                <p className="mt-1 font-mono text-[9px] uppercase leading-4 text-muted-foreground">
+                  {label}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
   );
 };

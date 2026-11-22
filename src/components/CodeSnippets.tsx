@@ -1,156 +1,190 @@
 import React, { useState } from 'react';
-import { Copy, Check } from 'lucide-react';
+import { Check, CheckCircle2, Code2, Copy } from 'lucide-react';
 
-export const CodeSnippets: React.FC = () => {
-  const [selectedLang, setSelectedLang] = useState<'curl' | 'ts' | 'python'>('curl');
-  const [copied, setCopied] = useState(false);
-
-  const curlCode = `# 1. Probing x402 Payment Challenge (Celo Hosted Facilitator)
+const STUDIO_TABS = [
+  {
+    id: 'x402-curl',
+    label: 'Celo x402 cURL',
+    language: 'BASH · CELO HOSTED FACILITATOR (EIP155:42220)',
+    code: `# 1. Request x402 V2 Payment Challenge from Sivan Agent #10089
 curl -i -X POST https://api.sivantech.online/api/v1/agent/invoke \\
   -H "Content-Type: application/json" \\
   -H "x-x402: true" \\
-  -d '{"prompt": "Initiate Service Agreement for 25 USDC on Celo"}'
+  -d '{"tool": "sivan_create_payment_link", "params": {"amount": 25, "network": "celo", "currency": "usdc"}}'
 
-# 2. Submitting Signed EIP-3009 Authorization for Gas-Free Settlement
+# 2. Submit Signed EIP-3009 Authorization for Gas-Free Celo Settlement
 curl -X POST https://api.sivantech.online/api/v1/agent/invoke \\
   -H "Content-Type: application/json" \\
   -H "x-x402: true" \\
   -H "payment-signature: eyJ4NDAyVmVyc2lvbiI6MiwicGF5bWVudFBheWxvYWQiOnt9fQ==" \\
-  -d '{"prompt": "Initiate Service Agreement for 25 USDC on Celo"}'`;
+  -d '{"tool": "sivan_create_payment_link", "params": {"amount": 25, "network": "celo", "currency": "usdc"}}'`,
+  },
+  {
+    id: 'typescript',
+    label: 'TypeScript / Node',
+    language: 'TYPESCRIPT · X402 + ERC-8004 INVOCATION',
+    code: `async function invokeSivanPaymentAi() {
+  const endpoint = 'https://api.sivantech.online/api/v1/agent/invoke';
 
-  const tsCode = `import fetch from 'node-fetch';
-
-async function invokeSivanAgent() {
-  // Call Sivan Gateway with x-x402 challenge header
-  const response = await fetch('https://api.sivantech.online/api/v1/agent/invoke', {
+  const res = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'x-x402': 'true',
     },
     body: JSON.stringify({
-      tool: 'sivan_create_payment_link',
+      tool: 'sivan_initiate_service_agreement',
       params: {
-        destinationAddress: '0x46eFfe0409BFE99b0435e7bb7219DC6586612345',
-        amount: 15,
+        title: 'AI Agent Backend Integration',
+        amount: 25,
+        currency: 'USDC',
         network: 'celo',
-        currency: 'usdc',
       },
     }),
   });
 
-  if (response.status === 402) {
-    const paymentRequiredHeader = response.headers.get('payment-required');
-    console.log('x402 Challenge Received:', Buffer.from(paymentRequiredHeader!, 'base64').toString());
-  } else {
-    const data = await response.json();
-    console.log('Agent Execution Success:', data);
+  if (res.status === 402) {
+    const headerB64 = res.headers.get('payment-required')!;
+    const challenge = JSON.parse(Buffer.from(headerB64, 'base64').toString('utf8'));
+    console.log('x402 Challenge (PayTo #10089):', challenge.x402.payTo);
   }
+}`,
+  },
+  {
+    id: 'self-id',
+    label: 'Self Agent ID ZK',
+    language: 'TYPESCRIPT · @SELFXYZ/AGENT-SDK PROOF-OF-HUMAN',
+    code: `import { SelfAgentVerifier } from '@selfxyz/agent-sdk';
+
+// Verify Celo Mainnet Proof-of-Human for Agent #10089
+const verifier = new SelfAgentVerifier({
+  network: 'mainnet',
+  registryAddress: '0xaC3DF9ABf80d0F5c020C06B04Cced27763355944',
+  rpcUrl: 'https://forno.celo.org',
+  maxAgentsPerHuman: 1,
+});
+
+// Check live Self status via Sivan Gateway
+const statusRes = await fetch('https://api.sivantech.online/api/v1/agent/self-status', {
+  headers: { 'x-self-agent-address': '0x46eFfe0409BFE99b0435e7bb7219DC6586612345' },
+});
+const { verification } = await statusRes.json();
+console.log('Tier:', verification.tier, 'Limit USD:', verification.maxTransactionLimitUsd);`,
+  },
+  {
+    id: 'python',
+    label: 'Python / LangChain',
+    language: 'PYTHON · AUTONOMOUS FIAT OFF-RAMP',
+    code: `import requests
+import base64
+import json
+
+SIVAN_INVOKE_URL = "https://api.sivantech.online/api/v1/agent/invoke"
+
+# Resolve Nigerian NUBAN Bank Account & Prepare cNGN Off-Ramp
+payload = {
+    "tool": "sivan_resolve_bank_account",
+    "params": {
+        "accountNumber": "0441234567",
+        "bankCode": "044"
+    }
 }
 
-invokeSivanAgent();`;
+res = requests.post(SIVAN_INVOKE_URL, json=payload)
+print("Resolved Bank Account & Agent Attribution:", res.json())`,
+  },
+];
 
-  const pythonCode = `import requests
-import json
-import base64
+export const CodeSnippets: React.FC = () => {
+  const [studioTab, setStudioTab] = useState(STUDIO_TABS[0].id);
+  const [copied, setCopied] = useState(false);
 
-def call_sivan_payment_ai():
-    url = "https://api.sivantech.online/api/v1/agent/invoke"
-    headers = {
-        "Content-Type": "application/json",
-        "x-x402": "true"
+  const activeStudio = STUDIO_TABS.find((t) => t.id === studioTab) ?? STUDIO_TABS[0];
+
+  const copyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(activeStudio.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      setCopied(false);
     }
-    payload = {
-        "tool": "sivan_resolve_bank_account",
-        "params": {
-            "accountNumber": "0441234567",
-            "bankCode": "044"
-        }
-    }
-    
-    res = requests.post(url, headers=headers, json=payload)
-    if res.status_code == 402:
-        req_b64 = res.headers.get("payment-required")
-        challenge = json.loads(base64.b64decode(req_b64).decode())
-        print("x402 Challenge:", challenge)
-    else:
-        print("Response:", res.json())
-
-call_sivan_payment_ai()`;
-
-  const getCode = () => {
-    if (selectedLang === 'curl') return curlCode;
-    if (selectedLang === 'ts') return tsCode;
-    return pythonCode;
-  };
-
-  const copyCode = () => {
-    navigator.clipboard.writeText(getCode());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <section id="code-snippets" className="py-20 bg-[#06080f] border-t border-slate-900 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="text-xs font-mono text-[#00f2fe] uppercase tracking-wider block mb-2">
-            Developer Integration
-          </span>
-          <h2 className="text-3xl font-display font-bold text-white tracking-tight">
-            Direct REST & Wire Protocol Reference
+    <section id="developers" className="section-shell border-b border-border py-24 lg:py-32">
+      <div className="mx-auto grid max-w-[1440px] gap-14 px-5 lg:grid-cols-[0.72fr_1.28fr] lg:items-center lg:px-10">
+        {/* Left Column */}
+        <div className="max-w-lg">
+          <span className="section-kicker">05 / Developer Studio & Wire Protocol</span>
+          <h2 className="section-title">
+            Settlement primitives for <span className="text-primary">agents and builders.</span>
           </h2>
-          <p className="text-slate-400 font-sans mt-2 text-sm">
-            Simple HTTP endpoints compliant with ERC-8004 and the Celo x402 V2 specification.
+          <p className="mt-6 text-base leading-7 text-muted-foreground">
+            Invoke Sivan Payment Ai via Celo x402 V2 HTTP challenges, Model Context Protocol (MCP) JSON-RPC 2.0, or Self Agent ID authenticated REST calls. Every request resolves to the same verifiable ledger and Service Agreement engine.
           </p>
+          <div className="mt-9 space-y-4">
+            {[
+              'HTTP 402 base64 payment-required challenge headers',
+              'Gas-free EIP-3009 settlement via api.x402.celo.org',
+              'Self Protocol ZK sybil protection ($50 vs $5,000 tiers)',
+              'ERC-8021 calldata attribution (celo_bdb587d550be)',
+            ].map((item) => (
+              <div key={item} className="flex items-center gap-3 text-sm">
+                <CheckCircle2 className="size-4 text-success shrink-0" />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="max-w-4xl mx-auto glass-panel rounded-2xl border border-slate-800/90 shadow-2xl overflow-hidden">
-          {/* Header Bar */}
-          <div className="flex items-center justify-between px-5 py-3.5 bg-slate-900/80 border-b border-slate-800">
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setSelectedLang('curl')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors ${
-                  selectedLang === 'curl' ? 'bg-[#00f2fe] text-[#06080f] font-semibold' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                cURL
-              </button>
-
-              <button
-                onClick={() => setSelectedLang('ts')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors ${
-                  selectedLang === 'ts' ? 'bg-[#00f2fe] text-[#06080f] font-semibold' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                TypeScript
-              </button>
-
-              <button
-                onClick={() => setSelectedLang('python')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors ${
-                  selectedLang === 'python' ? 'bg-[#00f2fe] text-[#06080f] font-semibold' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Python
-              </button>
+        {/* Right Column: Terminal Studio matching sivan-home-pagev2 */}
+        <div className="border border-border bg-background/90 shadow-2xl shadow-background">
+          <div className="flex flex-col gap-3 border-b border-border p-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">
+            <div role="tablist" aria-label="Developer interface" className="flex min-w-0 overflow-x-auto gap-1">
+              {STUDIO_TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  role="tab"
+                  aria-selected={studioTab === tab.id}
+                  onClick={() => {
+                    setStudioTab(tab.id);
+                    setCopied(false);
+                  }}
+                  className={`shrink-0 rounded-sm px-3 py-1.5 font-mono text-[10px] transition-colors ${
+                    studioTab === tab.id
+                      ? 'bg-secondary text-primary font-semibold'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
-
             <button
               onClick={copyCode}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono transition-colors"
+              aria-label="Copy developer example"
+              className="inline-flex items-center gap-1.5 self-end border border-border bg-card px-3 py-1.5 font-mono text-[10px] text-foreground hover:border-primary sm:self-auto"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? <Check className="size-3.5 text-success" /> : <Copy className="size-3.5" />}
               <span>{copied ? 'Copied' : 'Copy'}</span>
             </button>
           </div>
 
-          {/* Code */}
-          <div className="p-5 bg-[#030509] overflow-x-auto">
-            <pre className="text-xs font-mono text-slate-300 leading-relaxed">
-              <code>{getCode()}</code>
-            </pre>
+          <div className="flex items-center justify-between border-b border-border bg-card/60 px-5 py-3 font-mono text-[9px] text-muted-foreground">
+            <span>{activeStudio.language}</span>
+            <span className="text-success">● PRODUCTION READY</span>
+          </div>
+
+          <pre className="studio-code min-h-[340px] overflow-x-auto p-5 sm:p-7">
+            <code>{activeStudio.code}</code>
+          </pre>
+
+          <div className="flex items-center justify-between border-t border-border px-5 py-3 font-mono text-[9px] text-muted-foreground">
+            <span className="flex items-center gap-2">
+              <Code2 className="size-3.5 text-primary" /> SIVAN AGENTIC DEVELOPER INTERFACE
+            </span>
+            <span>AGENT #10089 · CELO MAINNET</span>
           </div>
         </div>
       </div>
