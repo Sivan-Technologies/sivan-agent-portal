@@ -59,7 +59,7 @@ export const ValueProps: React.FC = () => {
               </h2>
             </div>
             <p className="section-intro">
-              Sivan Ai goes beyond simple smart contract wrappers to give autonomous agents real banking rails, biometric sybil protection, and zero-gas multi-chain execution.
+              Sivan Ai goes beyond simple smart contract wrappers to give autonomous agents real banking rails, biometric sybil protection, and zero-gas Celo settlement.
             </p>
           </div>
 
@@ -103,12 +103,12 @@ export const ValueProps: React.FC = () => {
           </div>
 
           <div className="mt-14 grid gap-6 lg:grid-cols-[0.7fr_1.3fr]">
-            {/* Left: Network Switcher */}
+            {/* Left: Celo Settlement Rails */}
             <div className="border border-border bg-card p-5 sm:p-7">
               <span className="font-mono text-[9px] uppercase text-muted-foreground">
-                SELECT SETTLEMENT NETWORK
+                SELECT CELO SETTLEMENT RAIL
               </span>
-              <div className="mt-5 space-y-2" role="tablist" aria-label="Settlement network">
+              <div className="mt-5 space-y-2" role="tablist" aria-label="Celo settlement rails">
                 {AGENT_CHAINS.map((item, idx) => {
                   const ChainLogo = item.logo;
                   const active = activeChainIdx === idx;

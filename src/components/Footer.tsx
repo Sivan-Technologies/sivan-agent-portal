@@ -22,7 +22,7 @@ export const Footer: React.FC = () => {
             </a>
 
             <p className="mt-5 max-w-xs text-sm leading-6 text-muted-foreground">
-              The autonomous multi-chain settlement and African fiat off-ramp protocol for AI agents and the global digital workforce.
+              The autonomous Celo settlement and African fiat off-ramp protocol for AI agents and the global digital workforce.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">

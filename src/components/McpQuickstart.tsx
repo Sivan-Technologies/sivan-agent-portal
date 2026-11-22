@@ -5,7 +5,7 @@ const CERTIFIED_TOOLS = [
   {
     name: 'sivan_create_payment_link',
     category: 'ZERO-GAS COLLECTION',
-    desc: 'Generate a zero-gas multi-chain payment link and QR invoice for USDC, cUSD, or USDT.',
+    desc: 'Generate a zero-gas Celo payment link and QR invoice for USDC, cUSD, or USDT.',
     payload: `{
   "jsonrpc": "2.0",
   "id": 1,
@@ -99,8 +99,8 @@ const CERTIFIED_TOOLS = [
   },
   {
     name: 'sivan_get_balance',
-    category: 'MULTI-CHAIN TELEMETRY',
-    desc: 'Query unified internal ledger and on-chain vault balances across Celo, Stellar, Base, and Solana.',
+    category: 'CELO VAULT TELEMETRY',
+    desc: 'Query unified internal ledger and on-chain vault balances across Celo Mainnet and Celo Sepolia.',
     payload: `{
   "jsonrpc": "2.0",
   "id": 6,
