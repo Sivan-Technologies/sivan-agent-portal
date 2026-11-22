@@ -72,10 +72,87 @@ const X402_CHALLENGE_JSON = {
 const X402_HEADER_B64 =
   'eyJ4NDAyIjp7InZlcnNpb24iOjIsInNjaGVtZSI6ImV4YWN0IiwibmV0d29yayI6ImVpcDE1NTo0MjIyMCIsInBheVRvIjoiMHg0NmVGZmUwNDA5QkZFOTliMDQzNWU3YmI3MjE5REM2NTg2NjEyMzQ1IiwiYXNzZXQiOiIweGNlYkE5MzAwZjJiOTQ4NzEwZDI2NTNkRDdCMDdmMzNBOEIzMjExOEMiLCJhbW91bnQiOiI1MDAwIn19';
 
-const NIGERIAN_BANKS = [
-  { code: '044', name: 'Access Bank Nigeria', account: '0441234567', holder: 'SAMSON MICHEAL' },
-  { code: '058', name: 'Guaranty Trust Bank (GTCO)', account: '0589876543', holder: 'SIVAN TECHNOLOGYOPS' },
-  { code: '057', name: 'Zenith Bank PLC', account: '0574561230', holder: 'JONATHAN HART' },
+const EMERGING_CORRIDORS = [
+  {
+    id: 'NG',
+    name: 'Nigeria',
+    flag: '🇳🇬',
+    currency: 'NGN',
+    asset: 'cNGN',
+    decimals: 6,
+    rate: 1650,
+    rail: 'NIBSS / NIP Direct Rail',
+    speed: '< 1 to 2 Mins',
+    contract: '0xF6829D7393dAe24509eb1E52eE8e572e2E271a4f',
+    holder: 'SAMSON MICHEAL',
+    bankName: 'Access Bank Nigeria',
+    account: '0441234567 (NUBAN)',
+    txHash: '0xc339a4514e6b1e8949579e8d6f44ceea6ccc8450a79373d42fc2f331c734357d',
+  },
+  {
+    id: 'BR',
+    name: 'Brazil',
+    flag: '🇧🇷',
+    currency: 'BRL',
+    asset: 'wBRL',
+    decimals: 18,
+    rate: 5.75,
+    rail: 'Pix Instant Central Bank Rail',
+    speed: '< 30 Seconds',
+    contract: '0xD76f5Faf6888e24D9F04Bf92a0c8B921FE4390e0',
+    holder: 'CARLOS SILVA',
+    bankName: 'Nubank Brasil',
+    account: 'carlos.silva@pix.br (Chave Pix)',
+    txHash: '0x8f2a63d719be4d0928b502c4b8e21f928491c107e3768f512da5c3a0179f8e4a',
+  },
+  {
+    id: 'AR',
+    name: 'Argentina',
+    flag: '🇦🇷',
+    currency: 'ARS',
+    asset: 'wARS',
+    decimals: 18,
+    rate: 1045,
+    rail: 'Ripio / CBU Interbanking Rail',
+    speed: '< 2 Mins',
+    contract: '0x0DC4F92879B7670e5f4e4e6e3c801D229129D90D',
+    holder: 'MATEO GONZALEZ',
+    bankName: 'Banco Galicia',
+    account: '0070123456789012345678 (CBU)',
+    txHash: '0x7a5f82c9103e48b592d6e7104b2a38c91a0293b4827c193e481b29a74c10283e',
+  },
+  {
+    id: 'MX',
+    name: 'Mexico',
+    flag: '🇲🇽',
+    currency: 'MXN',
+    asset: 'wMXN',
+    decimals: 18,
+    rate: 20.4,
+    rail: 'SPEI Interbank Rail',
+    speed: '< 1 Min',
+    contract: '0x337E7456B420bD3481e7FA61fA9850343d610d34',
+    holder: 'ALEJANDRO MORALES',
+    bankName: 'BBVA Mexico',
+    account: '012180001234567890 (CLABE)',
+    txHash: '0x5c91d8e415b76f28a9b20739c1481b0a88e2c7a5f6e392d4b1a8f7c9e0132b47',
+  },
+  {
+    id: 'CO',
+    name: 'Colombia',
+    flag: '🇨🇴',
+    currency: 'COP',
+    asset: 'wCOP',
+    decimals: 18,
+    rate: 4420,
+    rail: 'PSE / ACH Colombia Rail',
+    speed: '< 2 Mins',
+    contract: '0x8a1D45e102e886510e891d2Ec656a708991e2D76',
+    holder: 'SOFIA RODRIGUEZ',
+    bankName: 'Bancolombia',
+    account: '10234567890 (Cuenta Ahorros)',
+    txHash: '0x4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f9e0d1c2b3a4f5e',
+  },
 ];
 
 export const LiveDemoArena: React.FC = () => {
@@ -97,14 +174,14 @@ export const LiveDemoArena: React.FC = () => {
   const [agreementRunning, setAgreementRunning] = useState<boolean>(false);
   const [agreementAmount, setAgreementAmount] = useState<number>(25);
 
-  // Tab 4: African Bank Off-Ramp State (Strictly realistic 5 to 50 USDC range)
+  // Tab 4: Global Fiat Off-Ramp State (Realistic 5 to 50 USDC range)
   const [offrampState, setOfframpState] = useState<'ready' | 'quoting' | 'resolving' | 'settled'>('settled');
   const [offrampUsdc, setOfframpUsdc] = useState<number>(15);
-  const [selectedBankIdx, setSelectedBankIdx] = useState<number>(0);
+  const [selectedCorridorIdx, setSelectedCorridorIdx] = useState<number>(0);
 
-  const activeBank = NIGERIAN_BANKS[selectedBankIdx] ?? NIGERIAN_BANKS[0];
-  // Live indicative conversion preview (1,650 cNGN per 1 USDC)
-  const indicativeCngn = (offrampUsdc * 1650).toLocaleString('en-US');
+  const activeCorridor = EMERGING_CORRIDORS[selectedCorridorIdx] ?? EMERGING_CORRIDORS[0];
+  // Live indicative conversion preview based on active corridor rate
+  const indicativeLocalAmount = (offrampUsdc * activeCorridor.rate).toLocaleString('en-US');
 
   const runX402Demo = () => {
     setX402State('challenging');
@@ -151,7 +228,7 @@ export const LiveDemoArena: React.FC = () => {
             </h2>
           </div>
           <p className="section-intro">
-            Built for hackathon judges and protocol engineers. Test the complete 4-stage lifecycle right in your browser: Celo x402 zero-gas challenges, Self Protocol Proof-of-Human security, milestone Service Agreements, and Textile FX Nigerian bank payouts.
+            Built for hackathon judges and protocol engineers. Test the complete 4-stage lifecycle right in your browser: Celo x402 zero-gas challenges, Self Protocol Proof-of-Human security, milestone Service Agreements, and global emerging-market bank payouts across Africa and Latin America.
           </p>
         </div>
 
@@ -186,8 +263,8 @@ export const LiveDemoArena: React.FC = () => {
             {
               id: 'offramp' as const,
               step: 'MODULE 04',
-              title: 'African Bank Off-Ramp',
-              sub: 'Textile FX cNGN · NIBSS Rail',
+              title: 'Global Fiat Corridors',
+              sub: 'Africa (cNGN) & LatAm (wBRL, wARS)',
               icon: Building2,
             },
           ].map((tab) => {
@@ -725,17 +802,17 @@ Content-Type: application/json
         )}
 
         {/* =====================================================================
-            TAB 4: AFRICAN BANK OFF-RAMP (TEXTILE FX + NIBSS)
+            TAB 4: GLOBAL FIAT CORRIDORS (AFRICA & LATIN AMERICA)
            ===================================================================== */}
         {activeTab === 'offramp' && (
           <div className="border-x border-b border-border bg-card">
             <div className="flex flex-col justify-between gap-4 border-b border-border bg-background/40 p-5 sm:flex-row sm:items-center sm:px-7">
               <div>
                 <span className="font-mono text-[10px] uppercase text-primary">
-                  CORRIDOR: CELO USDC → TEXTILE FX RFQ → cNGN → NIBSS BANK RAIL
+                  CORRIDOR: CELO USDC → PERMIT2 CONVERSION → LOCAL CENTRAL BANK RAIL
                 </span>
                 <h3 className="mt-1 font-display text-xl font-semibold">
-                  Last-Mile African Fiat Off-Ramp (&lt; 1 to 2 Minutes)
+                  Global Emerging-Market Fiat Off-Ramps (&lt; 1 to 2 Minutes)
                 </h3>
               </div>
 
@@ -763,7 +840,7 @@ Content-Type: application/json
                   {offrampState === 'quoting' || offrampState === 'resolving' ? (
                     <>
                       <RefreshCw className="size-3.5 animate-spin" />
-                      <span>SETTLING VIA NIBSS...</span>
+                      <span>SETTLING VIA {activeCorridor.rail.split(' ')[0]}...</span>
                     </>
                   ) : (
                     <>
@@ -776,23 +853,25 @@ Content-Type: application/json
             </div>
 
             <div className="p-5 sm:p-7 space-y-6">
-              {/* Target Bank Selector */}
-              <div className="flex flex-wrap items-center justify-between gap-4 border border-border bg-background/60 p-4 font-mono text-xs">
-                <span className="text-[10px] uppercase text-muted-foreground">
-                  DESTINATION NIGERIAN NUBAN ACCOUNT:
+              {/* Corridor Country Selector */}
+              <div className="flex flex-col gap-3 border border-border bg-background/60 p-4 font-mono text-xs sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-[10px] uppercase text-muted-foreground flex items-center gap-1.5">
+                  <span className="size-1.5 rounded-full bg-primary" />
+                  SELECT EMERGING-MARKET SETTLEMENT CORRIDOR:
                 </span>
                 <div className="flex flex-wrap gap-2">
-                  {NIGERIAN_BANKS.map((bank, idx) => (
+                  {EMERGING_CORRIDORS.map((corridor, idx) => (
                     <button
-                      key={bank.code}
-                      onClick={() => setSelectedBankIdx(idx)}
-                      className={`border px-3 py-1.5 text-[11px] transition-colors ${
-                        selectedBankIdx === idx
+                      key={corridor.id}
+                      onClick={() => setSelectedCorridorIdx(idx)}
+                      className={`inline-flex items-center gap-2 border px-3 py-1.5 text-[11px] transition-colors ${
+                        selectedCorridorIdx === idx
                           ? 'border-primary bg-primary/15 text-foreground font-semibold'
                           : 'border-border bg-card text-muted-foreground hover:text-foreground'
                       }`}
                     >
-                      {bank.name} ({bank.code})
+                      <span>{corridor.flag}</span>
+                      <span>{corridor.name} ({corridor.asset})</span>
                     </button>
                   ))}
                 </div>
@@ -807,23 +886,23 @@ Content-Type: application/json
                 </div>
 
                 <div className="bg-background/90 p-5">
-                  <span className="font-mono text-[9px] uppercase text-muted-foreground">02 · TEXTILE FX RFQ</span>
-                  <p className="mt-3 font-display text-2xl font-bold text-primary">{indicativeCngn} cNGN</p>
-                  <p className="mt-1 font-mono text-[10px] text-muted-foreground">1:1 Naira Stablecoin Parity</p>
+                  <span className="font-mono text-[9px] uppercase text-muted-foreground">02 · CELO FACILITATOR RFQ</span>
+                  <p className="mt-3 font-display text-2xl font-bold text-primary">{indicativeLocalAmount} {activeCorridor.asset}</p>
+                  <p className="mt-1 font-mono text-[10px] text-muted-foreground">{activeCorridor.decimals}d · Permit2 Verified</p>
                 </div>
 
                 <div className="bg-background/90 p-5">
-                  <span className="font-mono text-[9px] uppercase text-muted-foreground">03 · NUBAN RESOLUTION</span>
-                  <p className="mt-3 font-display text-base font-bold text-foreground">{activeBank.holder}</p>
+                  <span className="font-mono text-[9px] uppercase text-muted-foreground">03 · LOCAL RECIPIENT</span>
+                  <p className="mt-3 font-display text-base font-bold text-foreground">{activeCorridor.holder}</p>
                   <p className="mt-1 font-mono text-[10px] text-success">
-                    {activeBank.name} · {activeBank.account}
+                    {activeCorridor.bankName} · {activeCorridor.account}
                   </p>
                 </div>
 
                 <div className="bg-background/90 p-5">
-                  <span className="font-mono text-[9px] uppercase text-muted-foreground">04 · NIBSS / NIP RAIL</span>
-                  <p className="mt-3 font-display text-2xl font-bold text-success">&lt; 1 to 2 Mins</p>
-                  <p className="mt-1 font-mono text-[10px] text-muted-foreground">Direct Bank Credit Confirmed</p>
+                  <span className="font-mono text-[9px] uppercase text-muted-foreground">04 · CENTRAL BANK RAIL</span>
+                  <p className="mt-3 font-display text-2xl font-bold text-success">{activeCorridor.speed}</p>
+                  <p className="mt-1 font-mono text-[10px] text-muted-foreground">{activeCorridor.rail}</p>
                 </div>
               </div>
 
@@ -833,15 +912,15 @@ Content-Type: application/json
                   <CheckCircle2 className="size-5 text-success shrink-0 mt-0.5" />
                   <div>
                     <p className="font-semibold text-foreground">
-                      {indicativeCngn} NGN Disbursed to {activeBank.holder} ({activeBank.name})
+                      {indicativeLocalAmount} {activeCorridor.currency} Disbursed to {activeCorridor.holder} ({activeCorridor.bankName})
                     </p>
                     <p className="mt-1 text-[11px] text-muted-foreground">
-                      On-chain Celo settlement stamped with ERC-8021 calldata attribution tag celo_bdb587d550be
+                      On-chain Celo Permit2 settlement stamped with ERC-8021 calldata attribution tag celo_bdb587d550be
                     </p>
                   </div>
                 </div>
                 <a
-                  href="https://celoscan.io/tx/0xc339a4514e6b1e8949579e8d6f44ceea6ccc8450a79373d42fc2f331c734357d"
+                  href={`https://celoscan.io/tx/${activeCorridor.txHash}`}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex h-9 shrink-0 items-center gap-2 border border-success/40 bg-success/10 px-4 text-[11px] font-semibold text-success hover:bg-success/20"

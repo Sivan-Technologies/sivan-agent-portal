@@ -87,6 +87,54 @@ export const ValueProps: React.FC = () => {
         </div>
       </section>
 
+      {/* Option B: Celo x402 Global Fiat Corridors Telemetry Strip */}
+      <section aria-label="Celo x402 Global Fiat Corridors" className="border-b border-border bg-card/60">
+        <div className="mx-auto max-w-[1440px] px-5 py-8 lg:px-10">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="shrink-0 max-w-sm">
+              <div className="flex items-center gap-2 font-mono text-[10px] uppercase text-primary">
+                <span className="size-1.5 rounded-full bg-primary" />
+                <span>CELO x402 FACILITATOR · 7 EMERGING MARKETS</span>
+              </div>
+              <h3 className="mt-1.5 font-display text-lg font-semibold text-foreground">
+                Autonomous Settlement Corridors
+              </h3>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Zero-gas on-chain Permit2 execution into local banking rails across Africa and Latin America.
+              </p>
+            </div>
+
+            {/* 7-Country Responsive Grid */}
+            <div className="grid flex-1 grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7 lg:gap-2.5">
+              {[
+                { flag: '🇳🇬', ticker: 'cNGN', country: 'Nigeria', rail: 'NIBSS Bank Rail', decimals: '6d · Permit2' },
+                { flag: '🇧🇷', ticker: 'wBRL', country: 'Brazil', rail: 'Pix Central Rail', decimals: '18d · Permit2' },
+                { flag: '🇦🇷', ticker: 'wARS', country: 'Argentina', rail: 'Ripio / CBU', decimals: '18d · Permit2' },
+                { flag: '🇲🇽', ticker: 'wMXN', country: 'Mexico', rail: 'SPEI Interbank', decimals: '18d · Permit2' },
+                { flag: '🇨🇴', ticker: 'wCOP', country: 'Colombia', rail: 'PSE / ACH Rail', decimals: '18d · Permit2' },
+                { flag: '🇵🇪', ticker: 'wPEN', country: 'Peru', rail: 'Sol Interbancario', decimals: '18d · Permit2' },
+                { flag: '🇨🇱', ticker: 'wCLP', country: 'Chile', rail: 'Peso Transferencia', decimals: '18d · Permit2' },
+              ].map((c) => (
+                <div
+                  key={c.ticker}
+                  className="flex flex-col justify-between border border-border bg-background/80 p-3 transition-colors hover:border-primary/40 hover:bg-background"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xl" aria-hidden="true">{c.flag}</span>
+                    <span className="font-mono text-[8px] uppercase tracking-wider text-primary">{c.decimals}</span>
+                  </div>
+                  <div className="mt-3">
+                    <strong className="font-mono text-xs font-semibold text-foreground">{c.ticker}</strong>
+                    <p className="text-[11px] text-muted-foreground">{c.country}</p>
+                    <span className="mt-1 block font-mono text-[9px] text-success">{c.rail}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Section 04: Verifiable On-Chain Smart Receipts */}
       <section id="receipts" className="section-shell border-b border-border bg-card/35 py-24 lg:py-32">
         <div className="mx-auto max-w-[1440px] px-5 lg:px-10">
