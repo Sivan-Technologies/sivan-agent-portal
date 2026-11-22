@@ -1,5 +1,6 @@
 import React from 'react';
-import { Bot, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
+import sivanLogo from '../assets/sivan-logo.png';
 
 export const Footer: React.FC = () => {
   return (
@@ -8,10 +9,12 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-slate-800/80">
           {/* Brand Info */}
           <div className="space-y-4 md:col-span-1">
-            <div className="flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#00f2fe]/20 border border-[#00f2fe]/40 flex items-center justify-center text-[#00f2fe]">
-                <Bot className="w-4 h-4" />
-              </div>
+            <div className="flex items-center space-x-3">
+              <img
+                src={sivanLogo}
+                alt="Sivan Ai logo"
+                className="h-9 w-9 rounded-lg object-contain"
+              />
               <span className="font-display font-bold text-white text-base">Sivan Ai</span>
             </div>
             <p className="text-slate-400 leading-relaxed text-xs">

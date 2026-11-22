@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Bot, ExternalLink, Menu, X, ShieldCheck, Zap } from 'lucide-react';
+import { ExternalLink, Menu, X, ShieldCheck, Zap } from 'lucide-react';
+import sivanLogo from '../assets/sivan-logo.png';
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -10,14 +11,21 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-18">
           {/* Brand & Live Agent Status */}
           <div className="flex items-center space-x-4">
-            <a href="#" className="flex items-center space-x-3 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00f2fe]/20 to-[#fcff52]/10 border border-[#00f2fe]/40 flex items-center justify-center text-[#00f2fe] group-hover:border-[#00f2fe] transition-all">
-                <Bot className="w-5 h-5" />
-              </div>
+            <a href="/" className="flex items-center space-x-3 group" aria-label="Sivan Ai home">
+              <img
+                src={sivanLogo}
+                alt="Sivan Ai logo"
+                className="h-11 w-11 rounded-lg object-contain transition-transform group-hover:scale-105"
+              />
               <div className="flex flex-col">
-                <span className="font-display font-bold text-lg text-white tracking-tight flex items-center gap-1.5">
-                  Sivan Ai <span className="text-xs px-2 py-0.5 rounded-full bg-[#00f2fe]/10 text-[#00f2fe] font-mono border border-[#00f2fe]/30">Agent Portal</span>
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="font-display font-bold text-lg text-white tracking-tight">
+                    Sivan Ai
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#00f2fe]/10 text-[#00f2fe] font-mono border border-[#00f2fe]/30 font-semibold uppercase">
+                    Agent Portal
+                  </span>
+                </div>
                 <span className="text-[11px] text-slate-400 font-mono flex items-center gap-1">
                   Autonomous Rails for AI Agents
                 </span>
